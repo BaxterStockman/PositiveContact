@@ -6,4 +6,7 @@ threadsafe:     true
 
 handlers:
 - url:      /helloworld/.*
-  script:   helloworld.application
+  script:   helloworld.app
+
+- url:      /.*
+  script:   main.app

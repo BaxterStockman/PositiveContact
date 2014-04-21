@@ -6,6 +6,6 @@ class MainPage(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.write('Goodbye, Cruel World!')
 
-application = webapp2.WSGIApplication([
-    ('/', MainPage),
+app = webapp2.WSGIApplication([
+    ('/helloworld', MainPage),
 ], debug=True)

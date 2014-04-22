@@ -1,5 +1,6 @@
 from framework import bottle
 #from google.appengine.ext.webapp.util import run_wsgi_app
+#from backend import *
 
 
 app = application = bottle.Bottle()
@@ -7,13 +8,17 @@ app = application = bottle.Bottle()
 
 @app.route('/')
 def index():
-    data = "Hello, world!"
-    return bottle.template('templates/home', {'data': data, 'proj_name': "Positive Contact"})
+    return bottle.template('templates/home', {'proj_name': "Positive Contact"})
 
 
-@app.route('/stuff')
-def stuff():
-    return "<h4>Here's the stuff you wanted...</h4>"
+@app.route('/create')
+def create_contact():
+    return ""
+
+
+@app.route('/edit')
+def edit_contact():
+    return ""
 
 
 @app.error(403)
@@ -23,7 +28,8 @@ def error403(code):
 
 @app.error(404)
 def error404(code):
-    return "That resource does not exist"
+    #return "That resource does not exist"
+    return bottle.template('templates/404', {'proj_name': "Positive Contact"})
 
 
 if __name__ == "__main__":

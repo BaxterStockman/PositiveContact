@@ -2,15 +2,17 @@ application:    smiling-audio-556
 version:        1
 runtime:        python27
 api_version:    1
-threadsafe:     true
+threadsafe:     yes
 
 handlers:
+    #- url:          /(.*\.css)$
+    #  static_file:   static/assets/css/\1
 - url:          /static
   static_dir:   static
 
 - url:          /.*
-  script:       app.py
+  script:       main.app
 
 libraries:
-- name:     webapp3
+- name:     webapp2
   version:  latest

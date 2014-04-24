@@ -16,16 +16,16 @@ valid_phone_number_4 = lambda prop, value: valid_phone_number(prop, value, 4)
 # for ideas about nested models
 class Address(ndb.Model):
     type = ndb.StringProperty()
-    number = ndb.IntegerValue()
+    number = ndb.IntegerProperty()
     street = ndb.StringProperty()
     city = ndb.StringProperty()
 
 
 class PhoneNumber(ndb.Model):
     type = ndb.StringProperty()
-    area_code = ndb.IntegerValue(validator=valid_phone_number_3)
-    prefix = ndb.IntegerValue(validator=valid_phone_number_3)
-    line_number = ndb.IntegerValue(validator=valid_phone_number_4)
+    area_code = ndb.IntegerProperty(validator=valid_phone_number_3)
+    prefix = ndb.IntegerProperty(validator=valid_phone_number_3)
+    line_number = ndb.IntegerProperty(validator=valid_phone_number_4)
     full_number = ndb.ComputedProperty(lambda self:
                                        "{0}-{1}-{2}".format(self.area_code,
                                                             self.prefix,

@@ -1,6 +1,8 @@
 from framework import bottle
-#from google.appengine.ext.webapp.util import run_wsgi_app
-#from backend import *
+# from google.appengine.ext.webapp.util import run_wsgi_app
+from backend import *
+from framework.forms import ContactForm, SimpleForm
+from pprint import pprint
 
 
 app = application = bottle.Bottle()
@@ -8,17 +10,40 @@ app = application = bottle.Bottle()
 
 @app.route('/')
 def index():
-    return bottle.template('templates/home', {'proj_name': "Positive Contact"})
+    return bottle.template('templates/base', {'proj_name': "Positive Contact"})
 
 
-@app.route('/create')
-def create_contact():
-    return ""
+class foo():
+    bar = "FOOBAR"
 
 
-@app.route('/edit')
-def edit_contact():
-    return ""
+@app.get('/add')
+def add_form():
+    form = ContactForm()
+    return bottle.template('templates/base', {'proj_name': "Positive Contact",
+                                              'action': "Add",
+                                              'form': form})
+
+
+@app.post('/add')
+def add_submit():
+    form = ContactForm(bottle.request.forms.decode())
+    if form.validate():
+    else:
+        my_string = ""
+        my_dict = form.data
+        for elem in my_dict:
+            my_string += "{0}: {1}, ".format(elem, my_dict[elem])
+        return my_string
+
+
+@app.route('/edit/<contact_id:int>')
+def edit_contact(contact_id):
+    form = ContactForm()
+    return bottle.template('templates/base', {'contact_id': contact_id,
+                                                 'proj_name': "Positive Contact",
+                                                 'form': form,
+                                                 'action': "Edit"})
 
 
 @app.error(403)

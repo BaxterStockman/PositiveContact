@@ -11,10 +11,10 @@
     <title>Starter Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS-->
-    <link href="static/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link type="text/css" rel="stylesheet" href="static/assets/css/base.css" />
+    <link href="/static/assets/css/base.css" rel="stylesheet" type="text/css" />
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -41,7 +41,7 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="/">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
@@ -53,7 +53,7 @@
 
       <div class="starter-template">
         <h1>404 - Sorry, Nothing Here!</h1>
-        <img src="static/assets/images/food_bowl.jpg"></img>
+        <img src="/static/assets/images/food_bowl.jpg"></img>
         <p class="lead">The resource you requested does not exist.</p>
       </div>
 
@@ -65,6 +65,6 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="static/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/lib/bootstrap/js/bootstrap.min.js"></script>
   </body>
 </html>

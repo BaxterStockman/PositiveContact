@@ -1,8 +1,7 @@
 from framework import bottle
 # from google.appengine.ext.webapp.util import run_wsgi_app
 from backend import *
-from framework.forms import ContactForm, SimpleForm
-from pprint import pprint
+from forms import ContactForm, SimpleForm
 
 
 app = application = bottle.Bottle()
@@ -29,6 +28,7 @@ def add_form():
 def add_submit():
     form = ContactForm(bottle.request.forms.decode())
     if form.validate():
+        return "YAY!"
     else:
         my_string = ""
         my_dict = form.data

@@ -19,29 +19,25 @@ session_opts = {
 
 
 # Set up middleware
-app = bottle.app()
-site = beaker.middleware.SessionMiddleware(app, session_opts)
+app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
 
 
-@app.hook('before_request')
+@bottle.hook('before_request')
 def setup_request():
     bottle.request.session = bottle.request.environ.get('beaker.session')
 
 
-@app.route('/')
+@bottle.route('/')
 def index():
     return bottle.template('templates/base', {'proj_name': "Positive Contact"})
 
 
-@app.route('/test')
+@bottle.route('/test')
 def test():
-    s = bottle.request.environ.get('beaker.session')
-    s['test'] = s.get('test', 0) + 1
-    s.save()
-    return pprint.pformat(s)
+    return pprint.pformat(bottle.request.session)
 
 
-@app.get('/login')
+@bottle.get('/login')
 def login_form():
     form = LoginForm()
     return bottle.template('templates/base', {'proj_name': "Positive Contact",
@@ -49,7 +45,7 @@ def login_form():
                                               'form': form})
 
 
-@app.post('/login')
+@bottle.post('/login')
 def login_submit():
     form = LoginForm(bottle.request.forms.decode())
     if form.validate():
@@ -63,7 +59,7 @@ def login_submit():
         return my_string
 
 
-@app.get('/signup')
+@bottle.get('/signup')
 def signup_form():
     form = SignupForm()
     return bottle.template('templates/base', {'proj_name': "Positive Contact",
@@ -71,7 +67,7 @@ def signup_form():
                                               'form': form})
 
 
-@app.post('/signup')
+@bottle.post('/signup')
 def signup_submit():
     form = SignupForm(bottle.request.forms.decode())
     if form.validate():
@@ -85,7 +81,7 @@ def signup_submit():
         return my_string
 
 
-@app.get('/add')
+@bottle.get('/add')
 def add_form():
     form = ContactForm()
     return bottle.template('templates/base', {'proj_name': "Positive Contact",
@@ -93,7 +89,7 @@ def add_form():
                                               'form': form})
 
 
-@app.post('/add')
+@bottle.post('/add')
 def add_submit():
     form = ContactForm(bottle.request.forms.decode())
     if form.validate():
@@ -107,7 +103,7 @@ def add_submit():
         return my_string
 
 
-@app.route('/edit/<contact_id:int>')
+@bottle.route('/edit/<contact_id:int>')
 def edit_contact(contact_id):
     form = ContactForm()
     return bottle.template('templates/base', {'contact_id': contact_id,
@@ -116,15 +112,15 @@ def edit_contact(contact_id):
                                               'action': "Edit"})
 
 
-@app.error(403)
+@bottle.error(403)
 def error403(code):
     return "Invalid code specified"
 
 
-@app.error(404)
+@bottle.error(404)
 def error404(code):
     return bottle.template('templates/404', {'proj_name': "Positive Contact"})
 
 
 if __name__ == "__main__":
-    bottle.run(server="gae", app=site, debug=True)
+    bottle.run(server="gae", app=app, debug=True)

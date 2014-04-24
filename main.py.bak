@@ -13,25 +13,28 @@ http://stackoverflow.com/questions/13735333/bottle-py-session-with-beaker
 '''
 
 session_opts = {
-    'session.type': 'ext:google',
+    'session.data_dir': 'ext:google',
     'session.auto': True,
 }
 
 
+app = application = bottle.Bottle()
+
+
 # Set up middleware
-app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
+site = beaker.middleware.SessionMiddleware(app, session_opts)
 
 
-@bottle.hook('before_request')
-def setup_request():
-    bottle.request.session = bottle.request.environ.get('beaker.session')
+# @app.hook('before_request')
+# def setup_request():
+#     bottle.request.session = bottle.request.environ.get('beaker.session')
 
-@bottle.route('/')
+@app.route('/')
 def index():
     return bottle.template('templates/base', {'proj_name': "Positive Contact"})
 
 
-@bottle.route('/test')
+@app.route('/test')
 def test():
     s = bottle.request.environ.get('beaker.session')
     s['test'] = s.get('test', 0) + 1
@@ -44,7 +47,7 @@ class foo():
     bar = "FOOBAR"
 
 
-@bottle.get('/add')
+@app.get('/add')
 def add_form():
     form = ContactForm()
     return bottle.template('templates/base', {'proj_name': "Positive Contact",
@@ -52,7 +55,7 @@ def add_form():
                                               'form': form})
 
 
-@bottle.post('/add')
+@app.post('/add')
 def add_submit():
     form = ContactForm(bottle.request.forms.decode())
     if form.validate():
@@ -65,7 +68,7 @@ def add_submit():
         return my_string
 
 
-@bottle.route('/edit/<contact_id:int>')
+@app.route('/edit/<contact_id:int>')
 def edit_contact(contact_id):
     form = ContactForm()
     return bottle.template('templates/base', {'contact_id': contact_id,
@@ -74,16 +77,16 @@ def edit_contact(contact_id):
                                                  'action': "Edit"})
 
 
-@bottle.error(403)
+@app.error(403)
 def error403(code):
     return "Invalid code specified"
 
 
-@bottle.error(404)
+@app.error(404)
 def error404(code):
     #return "That resource does not exist"
     return bottle.template('templates/404', {'proj_name': "Positive Contact"})
 
 
 if __name__ == "__main__":
-    bottle.run(server="gae", app=app, debug=True)
+    bottle.run(server="gae", app=site, debug=True)

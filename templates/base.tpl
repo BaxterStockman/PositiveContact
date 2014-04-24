@@ -45,11 +45,18 @@
 
     <div class="container">
 
-    %if defined('action'):
-    %   include('templates/contact.tpl')
-    %else:
-    %   include('templates/home.tpl')
-    %end
+   <%if defined('action'):
+       if action == "Add" or action == "Edit":
+           include('templates/contact.tpl')
+       elif action == "Login":
+           include('templates/login.tpl')
+       elif action == "Sign up":
+           include('templates/signup.tpl')
+       end
+    else:
+       include('templates/home.tpl')
+    end
+    %>
 
 
     </div><!-- /.container -->

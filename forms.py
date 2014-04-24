@@ -12,7 +12,7 @@ class ContactForm(Form):
     lname = StringField('Last name', [InputRequired()])
     email = StringField('Email', [Email()])
     phone = StringField('Phone number', [Regexp('\d{3}\D*\d{3}\D*\d{4}\D*\d*')])
-    # photo = FileField('Photo')
+    photo = FileField('Photo')
 
 
 class LoginForm(Form):

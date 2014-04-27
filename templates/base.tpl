@@ -31,33 +31,87 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">{{proj_name}}</a>
+          <a class="navbar-brand" href="/">{{app_name}}</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            %if path == "/":
+            <li class="active"><a href="/">Home</a></li>
+            %else:
+            <li><a href="/">Home</a></li>
+            %end
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Manage<b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="dropdown-header">Contacts</li>
+                %if 'username' in session:
+                <li><a href="/add">Add contact</a></li>
+                %end
+                <li class="divider"></li>
+                <li class="dropdown-header">Account</li>
+                %if 'username' in session:
+                <li class="disabled"><a href="/login">Log in</a></li>
+                <li><a href="/logout">Log out</a></li>
+                %else:
+                <li><a href="/login">Log in</a></li>
+                <li class="disabled"><a href="/logout">Log out</a></li>
+                %end
+              </ul>
+            </li>
           </ul>
+          %#if path == "/":
+          <p class="navbar-text navbar-right">
+          %    if 'username' in session:
+            Welcome, {{ session['username'] }}!
+            <font size="2">
+            (Not {{ session['username' ] }}?
+            <a class="navbar-link" href="/login">Sign in</a>
+            as a different user.)
+            </font>
+          %    else:
+            Welcome, guest!  Please
+            <a class="navbar-link" href="/login">sign in</a>
+            or
+            <a class="navbar-link" href="/signup">create an account</a>
+            .
+          %    end
+          </p>
+          %#end
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
     <div class="container">
 
-   <%if defined('action'):
-       if action == "Add" or action == "Edit":
-           include('templates/contact.tpl')
-       elif action == "Login":
-           include('templates/login.tpl')
-       elif action == "Sign up":
-           include('templates/signup.tpl')
-       end
-    else:
-       include('templates/home.tpl')
-    end
-    %>
-
+      <div class="row">
+      <%
+      if 'username' in session:
+          if defined('action'):
+              if action == "Add" or action == "Edit":
+                  include('templates/contact.tpl')
+              elif action == "Upload":
+                  include('templates/upload.tpl')
+              elif action == "Sign up" or action == "Login":
+                  include('templates/manage_user.tpl')
+              else:
+                  include('templates/home')
+              end
+          else:
+              include('templates/list')
+          end
+      else:
+          if defined('action'):
+              if action == "Sign up" or action == "Login":
+                  include('templates/manage_user.tpl')
+              end
+          else:
+              include('templates/home')
+          end
+      end
+      %>
+      </div><!--/.row-->
 
     </div><!-- /.container -->
 

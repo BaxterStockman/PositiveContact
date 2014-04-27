@@ -1,6 +1,11 @@
 <div class="row">
-  <legend>Login</legend>
-  <form role="form" action="/add" method="POST"
+  <legend>{{ action }}</legend>
+  %if action == "Login":
+  %    post = "login"
+  %else:
+  %    post = "signup"
+  %end
+  <form role="form" action="/{{ post }}" method="POST"
       enctype="multipart/form-data">
       %for field in form:
       %    if defined('field'):
@@ -12,6 +17,6 @@
       </div>
       %    end
       %end
-      <button type="submit" class="btn" value="save">Login</button>
+      <button type="submit" class="btn" value="save">{{ action }}</button>
   </form>
 </div>

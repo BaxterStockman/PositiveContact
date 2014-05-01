@@ -1,5 +1,5 @@
+<legend>{{ target }}</legend>
 <div class="row">
-  <legend>{{ target }}</legend>
   <form role="form" target="{{ action }}" method="POST"
       enctype="multipart/form-data">
       %for field in form:

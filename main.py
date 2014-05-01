@@ -5,7 +5,7 @@ import re
 import sys
 import urllib
 import urllib2
-from forms import ContactForm, ContactSearchForm, LoginForm, PhotoForm, SignupForm
+from forms import ContactForm, ContactSearchForm, LoginForm, SignupForm
 from framework import bottle
 from google.appengine.api.images import get_serving_url
 from google.appengine.ext import ndb, blobstore
@@ -29,6 +29,7 @@ session_opts = {
     'session.auto': True,
 }
 
+
 # Set up middleware
 app = beaker.middleware.SessionMiddleware(bottle.app(), session_opts)
 
@@ -45,7 +46,6 @@ arguments happen to be the same as the initial function.
 The following code sets a default value for keywords
 across all calls to bottle.template()
 '''
-
 bottle.template = functools.partial(bottle.template,
     app_name="Positive Contact"
 )
@@ -53,6 +53,7 @@ bottle.template = functools.partial(bottle.template,
 
 def defergetter(key):
     return itemgetter(key);
+
 
 sort_keys = {
     'fname': defergetter('fname'),
@@ -74,7 +75,6 @@ def setup_request():
 
 @bottle.get('/')
 def index(key_query=None, filter_query=None, filter_form=None):
-    pprint.pprint(bottle.request)
     # If we don't have a get query or saved sort key, default to sorting by lname
     if key_query is None:
         if bottle.request.query.key_query:
@@ -110,11 +110,10 @@ def index(key_query=None, filter_query=None, filter_form=None):
     else:
         return bottle.template('templates/base')
 
+
 @bottle.post('/')
 def index_filter():
     filter_data = bottle.request.forms
-    print("FILTER DATA")
-    pprint.pprint(filter_data)
 
     if filter_data is None:
         filter_form = ContactForm()
@@ -133,11 +132,7 @@ def login_form(form=None):
 
     # Create a new form
     if form == None:
-        print("CREATING NEW FORM")
         form = LoginForm()
-
-    for field in form:
-        pprint.pprint(field.errors)
 
     return bottle.template('templates/base', {
         'target': "Login",
@@ -153,8 +148,6 @@ def login_submit(form=None):
 
     if form.validate():
         user = User.query(User.username == form.username.data).get()
-        print("PRINTING USER")
-        pprint.pprint(user)
 
         # Check that username and password are valid; otherwise raise error
         # messages and re-render form
@@ -211,6 +204,7 @@ def signup_submit():
         user_key_str = user.key.urlsafe()
         session_add('user_key_str', user_key_str)
         session_add('username', form.username.data)
+
         bottle.redirect('/')
     else:
         return signup_form(form)
@@ -345,7 +339,7 @@ def delete_contact(key_str):
     #del_contact = lambda c: c['key_str'] != key_str
     get_contact = lambda c: c['key_str'] == key_str
     contact = filter(get_contact, contacts)
-    pprint.pprint(contact)
+
     if 'photo_url' in contact:
         delete_serving_url(contact['photo_url'])
 
@@ -443,12 +437,15 @@ def create_contact(form, user_key=None, photo_url=None, blob_key=None):
 def refresh_path(path, timeout=0):
     return '<meta http-equiv="REFRESH" content="{0};url={1}">'.format(timeout, path)
 
+
 def session_add(key, value):
     bottle.request.environ.get('beaker.session')[key] = value
+
 
 def change_path(cb, path='/', *args, **kwargs):
     bottle.request.path = path
     return cb(*args, **kwargs)
+
 
 def contact_filter(filter_dict, contact):
     if filter_dict is None:

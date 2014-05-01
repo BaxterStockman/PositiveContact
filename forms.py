@@ -75,10 +75,6 @@ class ContactForm(Form):
     photo = FileField('Photo', [Regexp('\Aimage/', message="That's not an image file"), Optional()])
 
 
-class PhotoForm(Form):
-    photo = FileField('Photo', [Regexp('\Aimage/', message="That's not an image file"), Optional()])
-
-
 class ContactSearchForm(Form):
     query = StringField('Search')
     state = SelectFieldWithDisable('Filter by State', choices=state_select,

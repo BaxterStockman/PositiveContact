@@ -1,22 +1,26 @@
 <div class="row">
-  <legend>{{ action }}</legend>
-  %if action == "Login":
-  %    post = "login"
-  %else:
-  %    post = "signup"
-  %end
-  <form role="form" action="/{{ post }}" method="POST"
+  <legend>{{ target }}</legend>
+  <form role="form" target="{{ action }}" method="POST"
       enctype="multipart/form-data">
       %for field in form:
-      %    if defined('field'):
-      <div class="form-group">
-          <div class="input-group">
-          {{ !field.label() }}:
-          {{ !field(class_="form-control", size="100", maxlength="100") }}
-          </div>
-      </div>
-      %    end
+          %if defined('field'):
+              %if field.errors:
+              <div class="form-group has-error">
+              %else:
+              <div class="form-group">
+              %end
+                  <div class="input-group">
+                  {{ !field.label() }}:
+                  %if field.errors:
+                      %for error in field.errors:
+                          {{ error }}
+                      %end
+                  %end
+                  {{ !field(class_="form-control", size="100", maxlength="100") }}
+                  </div>
+              </div>
+          %end
       %end
-      <button type="submit" class="btn" value="save">{{ action }}</button>
+      <button type="submit" class="btn" value="save">{{ target }}</button>
   </form>
 </div>

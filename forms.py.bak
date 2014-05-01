@@ -14,7 +14,6 @@ state_list = ['State',
               'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT',
               'VA', 'VT', 'WA', 'WI', 'WV', 'WY']
 state_select = [(state, state) for state in state_list]
-state_select[0] = ("", 'State')
 
 
 class SelectWithDisable(object):
@@ -51,13 +50,7 @@ class SelectFieldWithDisable(SelectField):
 
     def iter_choices(self):
         for value, label in self.choices:
-            # This line is odd.  According to the docs, the values for a select
-            # field are tuples of the form (value, label).  However, in order
-            # to get an empty string for the value of 'State' (my default
-            # option), while also disabling it, I have to do 'value in
-            # self.disabled' instead of 'label in self.disabled', and pass the
-            # tuple '("", 'State')'.  Strange.
-            yield (value, label, self.coerce(value) == self.data, value in self.disabled)
+            yield (value, label, self.coerce(value) == self.data, label in self.disabled)
 
 
 class ContactForm(Form):
@@ -67,12 +60,12 @@ class ContactForm(Form):
     phone = StringField('Phone number', [Regexp('\d{3}\D*\d{3}\D*\d{4}\D*\d*',
                                                 message="That's not a valid phone number"),
                                          Optional()])
-    street = StringField('Street Address', [Regexp('\d+\s+[\w\s.\d]+'),
-                                            Optional()])
+    street = StringField('Street Address', [Regexp('\d+\s+[\w\s.\d]+')])
     city = StringField('City')
     state = SelectFieldWithDisable('State', choices=state_select,
                                    disabled=['State'], default='State')
-    photo = FileField('Photo', [Regexp('\Aimage/', message="That's not an image file"), Optional()])
+    add_photo = BooleanField('Add a photo?')
+    #photo = FileField('Photo', [Regexp('\Aimage/', message="That's not an image file"), Optional()])
 
 
 class PhotoForm(Form):
@@ -85,8 +78,21 @@ class ContactSearchForm(Form):
                                    disabled=['State'], default='State')
 
 
+def verify_user(form, username, password=None):
+    user = User.query(User.username == username).get()
+    if not user:
+        raise ValidationError('That is not a valid username')
+    if password != user.password:
+        raise ValidationError('That is not a valid password')
+
+
 class LoginForm(Form):
-    username = StringField('Username', [InputRequired(message="Please provide your username")])
+    username = StringField(
+        'Username',
+        [InputRequired(message="Please provide your username"),
+         #functools.partial(verify_user, password=password)
+         ]
+    )
     password = PasswordField('Password', [InputRequired(message="Please provide your password")])
 
 
@@ -99,3 +105,74 @@ class SignupForm(Form):
         [InputRequired("Please provide a password"),
          EqualTo('password', message="Passwords must match")])
     check_password = PasswordField('Re-enter password')
+
+
+'''
+Base forms based on ndb models
+'''
+BaseContactForm = model_form(
+    Contact,
+    exclude=('updated', 'blob_key', 'user_key', 'address', 'photo_url'),
+    field_args={
+        'fname': {
+            'label': 'First name',
+            'validators': [InputRequired(message="You must provide a first name")],
+        },
+        'lname': {
+            'label': 'Last name',
+            'validators': [InputRequired(message="You must provide a last name")],
+        },
+        'email': {
+            'label': 'Email',
+            'validators': [Email(message="That's not a valid email address"),
+                           Optional()],
+        },
+        'phone': {
+            'label': 'Phone number',
+            'validators': [Regexp('\d{3}\D*\d{3}\D*\d{4}\D*\d*',
+                                  message="That's not a valid phone number"),
+                           Optional()],
+        },
+    },
+)
+
+BaseAddressForm = model_form(
+    Address,
+    field_args={
+        'street': {
+            'label': 'Street',
+        },
+        'city': {
+            'label': 'City'
+        },
+        'state': {
+            'label': 'State',
+            'choices': state_select,
+            'disabled': ['State'],
+            'default': 'State',
+        },
+    },
+)
+
+BaseUserForm = model_form(
+    User,
+    field_args={
+        'username': {
+            'label': 'Username',
+            'validators':
+                [InputRequired(message="Please provide your username"),
+                 #functools.partial(verify_user, password=password),
+                 ],
+        },
+        'password': {
+            'label': 'Password',
+            'validators':
+                [InputRequired(message="Please provide your password")],
+        }
+    }
+)
+
+class ndbContactForm(BaseContactForm):
+    photo = FileField('Photo', [Regexp('\Aimage/', message="That's not an image file"), Optional()])
+
+

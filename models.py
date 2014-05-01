@@ -1,5 +1,4 @@
-from google.appengine.ext import ndb, blobstore
-from google.appengine.api.images import get_serving_url
+from google.appengine.ext import ndb
 
 
 class User(ndb.Model):
@@ -11,7 +10,6 @@ class User(ndb.Model):
 # Thanks to https://developers.google.com/appengine/docs/python/ndb/properties
 # for ideas about nested models
 class Address(ndb.Model):
-    number = ndb.StringProperty()
     street = ndb.StringProperty()
     city = ndb.StringProperty()
     state = ndb.StringProperty()

@@ -37,10 +37,11 @@
           <ul class="nav navbar-nav">
             %if path == "/":
             <li class="active"><a href="/">Home</a></li>
+            <li class="dropdown">
             %else:
             <li><a href="/">Home</a></li>
+            <li class="dropdown active">
             %end
-            <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 Manage<b class="caret"></b>
               </a>
@@ -88,12 +89,12 @@
       <div class="row">
       <%
       if 'username' in session:
-          if defined('action'):
-              if action == "Add" or action == "Edit":
+          if defined('target'):
+              if target == "Add" or target == "Edit":
                   include('templates/contact.tpl')
-              elif action == "Upload":
+              elif target == "Upload":
                   include('templates/upload.tpl')
-              elif action == "Sign up" or action == "Login":
+              elif target == "Sign up" or target == "Login":
                   include('templates/manage_user.tpl')
               else:
                   include('templates/home')
@@ -102,12 +103,12 @@
               include('templates/list')
           end
       else:
-          if defined('action'):
-              if action == "Sign up" or action == "Login":
+          if defined('target'):
+              if target == "Sign up" or target == "Login":
                   include('templates/manage_user.tpl')
               end
           else:
-              include('templates/home')
+              include('templates/jumbotron')
           end
       end
       %>

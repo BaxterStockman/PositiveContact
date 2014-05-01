@@ -74,6 +74,7 @@ def setup_request():
 
 @bottle.get('/')
 def index(key_query=None, filter_query=None, filter_form=None):
+    pprint.pprint(bottle.request)
     # If we don't have a get query or saved sort key, default to sorting by lname
     if key_query is None:
         if bottle.request.query.key_query:
@@ -97,16 +98,10 @@ def index(key_query=None, filter_query=None, filter_form=None):
 
     # Refresh contacts and filter by any user-entered conditions
     contacts = refresh_contact_dict()
-    pprint.pprint(contacts)
     filtered_contacts = filter(filter_func, contacts)
 
     # Grab contacts and place in dictionary for sorting
     if contacts:
-        for contact in contacts:
-            if 'photo_url' in contact:
-                print(contact['photo_url'])
-            else:
-                print("Nope.")
         sorted_contacts = sorted(filtered_contacts, key=sort_key)
         return bottle.template('templates/base',
                                search_form=ContactSearchForm(),
